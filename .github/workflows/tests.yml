@@ -17,22 +17,22 @@ jobs:
     name: Check composer.json
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: shivammathur/setup-php@v2
         with:
           coverage: none
-          php-version: '8.2'
+          php-version: '8.4'
       - run: composer validate --strict --no-check-lock
 
   static_analysis:
     name: Static analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: shivammathur/setup-php@v2
         with:
           coverage: none
-          php-version: '8.2'
+          php-version: '8.4'
       - name: Install dependencies
         run: composer update --ansi --no-progress --prefer-dist --no-interaction
       - run: vendor/bin/phpstan analyze
@@ -43,23 +43,23 @@ jobs:
     strategy:
       matrix:
         selenium_version: [ '2.53.1' ]
-        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2' ]
+        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
         with_coverage: [ false ]
         include:
           - selenium_version: '2.53.1'
-            php: '8.3'
+            php: '8.4'
             with_coverage: true
           - selenium_version: '3.141.59'
-            php: '8.3'
+            php: '8.4'
             with_coverage: true
           - selenium_version: '4'
-            php: '8.3'
+            php: '8.4'
             with_coverage: true
       fail-fast: false
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -69,8 +69,9 @@ jobs:
           coverage: "xdebug"
           php-version: "${{ matrix.php }}"
           tools: composer
+          ini-file: 'development'
           # PHP 7.1 development web server segfaults if timezone not set.
-          ini-values: date.timezone=Europe/Paris, error_reporting=-1, display_errors=On
+          ini-values: date.timezone=Europe/Paris
 
       - name: Install dependencies
         run: |
